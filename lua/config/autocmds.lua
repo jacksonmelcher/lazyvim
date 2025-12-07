@@ -6,3 +6,15 @@
 --
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
+
+-- Auto-open mini.files when opening a directory
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    local arg = vim.fn.argv(0)
+    if arg and vim.fn.isdirectory(arg) == 1 then
+      vim.defer_fn(function()
+        require("mini.files").open(arg, false)
+      end, 10)
+    end
+  end,
+})
