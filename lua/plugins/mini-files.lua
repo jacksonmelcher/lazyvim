@@ -11,11 +11,21 @@ return {
       },
       options = {
         use_as_default_explorer = true,
+        permanent_delete = false,
+      },
+      mappings = {
+        go_in = "l",
+        go_in_plus = "<CR>",
+        go_out = "H",
+        go_out_plus = "h",
+        reset = ",",
+        reveal_cwd = ".",
+        show_help = "g?",
       },
       windows = {
         preview = true,
         width_focus = 30,
-        width_nofocus = 15,
+        -- width_nofocus = 15,
         width_preview = 50,
       },
     },
@@ -59,12 +69,32 @@ return {
         require("mini.files").refresh({ content = { filter = new_filter } })
       end
 
-      -- Add keymap to toggle hidden files with 'g.'
+      -- Custom delete function that moves files to trash
+      local files_trash = function()
+        local cur_entry = require("mini.files").get_fs_entry()
+        if cur_entry == nil then
+          return
+        end
+
+        local response = vim.fn.input({
+          prompt = "Trash " .. vim.fn.fnamemodify(cur_entry.path, ":t") .. "? (y/n): ",
+        })
+
+        if response:lower() == "y" then
+          vim.fn.system({ "trash", cur_entry.path })
+          require("mini.files").synchronize()
+        end
+      end
+
+      -- Add keymaps when mini.files buffer is created
       vim.api.nvim_create_autocmd("User", {
         pattern = "MiniFilesBufferCreate",
         callback = function(args)
           local buf_id = args.data.buf_id
+          -- Toggle hidden files with 'g.'
           vim.keymap.set("n", "g.", toggle_dotfiles, { buffer = buf_id, desc = "Toggle hidden files" })
+          -- Move to trash with 'gd'
+          vim.keymap.set("n", "gd", files_trash, { buffer = buf_id, desc = "Move to trash" })
         end,
       })
     end,
