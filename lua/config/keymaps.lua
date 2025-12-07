@@ -21,3 +21,24 @@ vim.keymap.set(
   '"_diw',
   { noremap = true, silent = true, desc = "Delete in word without overwriting clipboard" }
 )
+
+vim.keymap.set("n", "gl", vim.diagnostic.open_float, { desc = "Line Diagnostics" })
+
+-- Delete buffer with <leader>c instead of <leader>bd
+vim.keymap.set("n", "<leader>c", function()
+  require("snacks").bufdelete()
+end, { desc = "Delete Buffer" })
+
+-- Organize imports with Biome (overrides default vtsls)
+vim.keymap.set("n", "<leader>co", function()
+  vim.lsp.buf.code_action({
+    context = {
+      only = { "source.organizeImports.biome" },
+      diagnostics = {},
+    },
+    apply = true,
+  })
+end, { desc = "Organize Imports (Biome)" })
+
+-- Enable this option to avoid conflicts with Prettier.
+vim.g.lazyvim_prettier_needs_config = true
