@@ -34,10 +34,15 @@ return {
         "<leader>e",
         function()
           if not require("mini.files").close() then
-            require("mini.files").open(LazyVim.root(), true)
+            local current_file = vim.api.nvim_buf_get_name(0)
+            if current_file ~= "" then
+              require("mini.files").open(current_file, true)
+            else
+              require("mini.files").open(LazyVim.root(), true)
+            end
           end
         end,
-        desc = "Toggle mini.files (Root Dir)",
+        desc = "Toggle mini.files (Current File)",
       },
       {
         "<leader>E",
