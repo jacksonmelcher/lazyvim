@@ -2,6 +2,10 @@ return {
   {
     "neovim/nvim-lspconfig",
     opts = function(_, opts)
+      -- Disable inlay hints
+      opts.inlay_hints = opts.inlay_hints or {}
+      opts.inlay_hints.enabled = false
+
       -- Ensure biome is set up
       opts.servers = opts.servers or {}
       opts.servers.biome = opts.servers.biome or {}
@@ -33,8 +37,5 @@ return {
 
       return opts
     end,
-    inlay_hints = {
-      enabled = false,
-    },
   },
 }

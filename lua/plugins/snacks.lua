@@ -6,4 +6,20 @@ return {
       enabled = false,
     },
   },
+  keys = {
+    {
+      "<leader>ff",
+      function()
+        Snacks.picker.files({ cwd = vim.fn.getcwd() })
+      end,
+      desc = "Find Files (cwd)",
+    },
+    {
+      "<leader>fF",
+      function()
+        Snacks.picker.files()
+      end,
+      desc = "Find Files (Root)",
+    },
+  },
 }
